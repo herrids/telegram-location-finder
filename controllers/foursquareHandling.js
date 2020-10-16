@@ -30,6 +30,7 @@ exports.searchVenues = async (search) => {
                 qs: {
                     client_id: foursquare_config.client_id,
                     client_secret: foursquare_config.client_secret,
+                    v: foursquare_config.v
                 }
             }, (err, res, body) => {
                 const parsedJSON = JSON.parse(body)
