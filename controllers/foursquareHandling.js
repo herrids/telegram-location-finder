@@ -4,8 +4,7 @@ const Place = require("../models/place")
 
 exports.searchVenues = async (search) => {
   return new Promise(resolve => {
-    request(
-      {
+    request({
         url: "https://api.foursquare.com/v2/venues/search",
         method: "GET",
         qs: {
@@ -17,8 +16,7 @@ exports.searchVenues = async (search) => {
           categoryId: search.category.foursquareId,
           v: foursquare_config.v
         }
-      },
-      async (err, res, body) => {
+    }, async (err, res, body) => {
         if (err) {
           console.error(err);
           venue = false;
@@ -26,7 +24,17 @@ exports.searchVenues = async (search) => {
           const fsJSON = JSON.parse(body);
           if (fsJSON.response.venues.length < search.index+1) resolve(null);
           if (fsJSON.response.venues[search.index]) {
-            //start another request that gets details of place
+            request({
+                url: "https://api.foursquare.com/v2/venues/" + fsJSON.response.venues[search.index].id,
+                method: "GET",
+                qs: {
+                    client_id: foursquare_config.client_id,
+                    client_secret: foursquare_config.client_secret,
+                }
+            }, (err, res, body) => {
+                const parsedJSON = JSON.parse(body)
+                console.log(parsedJSON)
+            })
             const place = await Place.save(fsJSON.response.venues[search.index])
             resolve([fsJSON.response.venues[search.index], place])
           }
