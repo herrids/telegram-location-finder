@@ -21,11 +21,13 @@ exports.searchVenues = async (search) => {
           console.error(err);
           venue = false;
         } else {
-          const fsJSON = JSON.parse(body);
-          if (fsJSON.response.venues.length < search.index+1) resolve(null);
-          if (fsJSON.response.venues[search.index]) {
+            console.log(JSON.parse(body).response.venues)
+          const allVenuesFoursquareResponse = JSON.parse(body);
+          if (allVenuesFoursquareResponse.response.venues.length < search.index+1) resolve(null);
+          if (allVenuesFoursquareResponse.response.venues[search.index]) {
+            const venueId = allVenuesFoursquareResponse.response.venues[search.index].id
             request({
-                url: "https://api.foursquare.com/v2/venues/" + fsJSON.response.venues[search.index].id,
+                url: "https://api.foursquare.com/v2/venues/" + venueId,
                 method: "GET",
                 qs: {
                     client_id: foursquare_config.client_id,
@@ -37,8 +39,8 @@ exports.searchVenues = async (search) => {
                 console.log(parsedJSON.response.venue.price)
                 parsedJSON.response.venue.attributes.groups.forEach(attr => console.log(attr.items))
             })
-            const place = await Place.save(fsJSON.response.venues[search.index])
-            resolve([fsJSON.response.venues[search.index], place])
+            const place = await Place.save(allVenuesFoursquareResponse.response.venues[search.index])
+            resolve([allVenuesFoursquareResponse.response.venues[search.index], place])
           }
         }
       }
