@@ -26,6 +26,7 @@ exports.searchVenues = async (search) => {
           const fsJSON = JSON.parse(body);
           if (fsJSON.response.venues.length < search.index+1) resolve(null);
           if (fsJSON.response.venues[search.index]) {
+            //start another request that gets details of place
             const place = await Place.save(fsJSON.response.venues[search.index])
             resolve([fsJSON.response.venues[search.index], place])
           }
