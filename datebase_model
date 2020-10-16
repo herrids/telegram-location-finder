@@ -1,0 +1,28 @@
+places: {
+  foursquare_id
+}
+
+categories: {
+  foursquare_id
+  emoji
+}
+
+users: {
+  messenger_id
+}
+
+searches: {
+  userId
+  location: {
+    long
+    lat
+  }
+  categoryId
+  placeId
+  rating
+}
+
+messages: {
+  userId
+  text
+}
