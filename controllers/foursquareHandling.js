@@ -35,7 +35,7 @@ exports.searchVenues = async (search) => {
             }, (err, res, body) => {
                 const parsedJSON = JSON.parse(body)
                 console.log(parsedJSON.response.venue.price)
-                console.log(parsedJSON.response.venue.attributes)
+                parsedJSON.response.venue.attributes.groups.forEach(attr => console.log(attr.items))
             })
             const place = await Place.save(fsJSON.response.venues[search.index])
             resolve([fsJSON.response.venues[search.index], place])
