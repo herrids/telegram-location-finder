@@ -3,7 +3,7 @@ const foursquare_config = require("../config/foursquareConfig")
 const Place = require("../models/place")
 
 exports.searchVenues = async (search) => {
-  return new Promise(resolve => {
+    return new Promise(resolve => {
     request({
         url: "https://api.foursquare.com/v2/venues/search",
         method: "GET",
@@ -19,13 +19,11 @@ exports.searchVenues = async (search) => {
     }, async (err, res, body) => {
         if (err) {
           console.error(err);
-          venue = false;
         } else {
-            console.log(JSON.parse(body).response.venues)
-          const allVenuesFoursquareResponse = JSON.parse(body);
-          if (allVenuesFoursquareResponse.response.venues.length < search.index+1) resolve(null);
-          if (allVenuesFoursquareResponse.response.venues[search.index]) {
-            const venueId = allVenuesFoursquareResponse.response.venues[search.index].id
+          const fsAllVenues = JSON.parse(body).response.venues;
+          if (fsAllVenues.length < search.index+1) resolve(null);
+          if (fsAllVenues[search.index]) {
+            const venueId = fsAllVenues[search.index].id
             request({
                 url: "https://api.foursquare.com/v2/venues/" + venueId,
                 method: "GET",
@@ -35,12 +33,10 @@ exports.searchVenues = async (search) => {
                     v: foursquare_config.v
                 }
             }, (err, res, body) => {
-                const parsedJSON = JSON.parse(body)
-                console.log(parsedJSON.response.venue.price)
-                parsedJSON.response.venue.attributes.groups.forEach(attr => console.log(attr.items))
+                const fsVenue = JSON.parse(body).response.venue
+                const place = await Place.save(fsVenue)
+                resolve(place)
             })
-            const place = await Place.save(allVenuesFoursquareResponse.response.venues[search.index])
-            resolve([allVenuesFoursquareResponse.response.venues[search.index], place])
           }
         }
       }

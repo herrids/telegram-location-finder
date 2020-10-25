@@ -13,7 +13,9 @@ mongoose.connect('mongodb://127.0.0.1:27017', {
   dbName: "recommendations",
   user: "herrids",
   pass: "RCV4AQ6rUhmej4u",
-  useFindAndModify: false
+  useFindAndModify: false,
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 });
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));

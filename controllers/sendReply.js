@@ -10,15 +10,17 @@ module.exports = async (ctx, next) => {
   }
   else {
     const venue = await foursquareHandling.searchVenues(ctx.session.search);
-    if (!venue || !venue[0])
+    console.log(venue)
+    if (!venue)
       ctx.reply(
         `Leider haben wir ${ctx.session.search.index==0 ? "keinen passenden Ort": "keine weiteren Orte"} für ${ctx.session.search.category.emoji} gefunden. Probiere eine andere Kategorie`, 
         addKeyboardMarkup("category"));
     else {
-      await ctx.replyWithLocation(venue[0].location.lat, venue[0].location.lng);
-      await ctx.reply(ctx.session.search.index==0 ?"Schau, folgendes habe ich gefunden: " + venue[0].name: "Wie wäre es hiermit: " + venue[0].name, 
-      addKeyboardMarkup("recommendation"));
-      ctx.session.search.place = venue[1]
+      await ctx.replyWithLocation(venue.latitude, venue.longitude);
+      let message = ctx.session.search.index==0 ? "Schau, folgendes habe ich gefunden: " + venue.name : "Wie wäre es hiermit: " + venue.name
+
+      await ctx.reply(message, addKeyboardMarkup("recommendation"));
+      ctx.session.search.place = venue
     }
   }
   next()
