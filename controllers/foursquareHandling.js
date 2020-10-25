@@ -32,7 +32,7 @@ exports.searchVenues = async (search) => {
                     client_secret: foursquare_config.client_secret,
                     v: foursquare_config.v
                 }
-            }, (err, res, body) => {
+            }, async (err, res, body) => {
                 const fsVenue = JSON.parse(body).response.venue
                 const place = await Place.save(fsVenue)
                 resolve(place)
