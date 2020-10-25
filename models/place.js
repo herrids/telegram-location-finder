@@ -43,6 +43,7 @@ let PlaceSchema = new Schema({
 const Model = mongoose.model('Place', PlaceSchema);
 
 exports.save = async fsVenue => {
+  console.log(fsVenue)
   const place = await Model.findOne({foursquareId: fsVenue.id})
   if (place) return place
   else return await Model.create({
